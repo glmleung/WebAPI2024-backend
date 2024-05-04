@@ -5,18 +5,24 @@ import logger from "koa-logger";
 import passport from "koa-passport";
 import serve from "koa-static";
 import { router as dogRoutes } from "./routes/dogs.routes";
+import { db } from "./database";
 
-const app: Koa = new Koa();
+async function run() {
+  await db.sync();
+  const app: Koa = new Koa();
 
-app.use(serve("./docs"));
+  app.use(serve("./docs"));
 
-app.use(json());
-app.use(logger());
-app.use(bodyParser());
-app.use(passport.initialize());
-app.use(dogRoutes.routes());
-app.use(dogRoutes.allowedMethods());
+  app.use(json());
+  app.use(logger());
+  app.use(bodyParser());
+  app.use(passport.initialize());
 
-app.listen(10888, () => {
-  console.log("Koa Started");
-});
+  app.use(dogRoutes.routes());
+  app.use(dogRoutes.allowedMethods());
+  app.listen(10888, () => {
+    console.log("Koa Started");
+  });
+}
+
+run();
