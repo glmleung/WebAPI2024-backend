@@ -6,7 +6,6 @@ const db = new Sequelize(
   { dialect: "postgres" }
 );
 
-
 db.define(
   "dogs",
   {
@@ -26,8 +25,7 @@ db.define(
     },
   },
   {
-    createdAt: false,
-    updatedAt: false,
+    timestamps: false,
   }
 );
 export { db };

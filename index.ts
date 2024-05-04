@@ -4,13 +4,14 @@ import json from "koa-json";
 import logger from "koa-logger";
 import passport from "koa-passport";
 import serve from "koa-static";
+import cors from "@koa/cors";
 import { router as dogRoutes } from "./routes/dogs.routes";
 import { db } from "./database";
 
 async function run() {
   await db.sync();
   const app: Koa = new Koa();
-
+  app.use(cors());
   app.use(serve("./docs"));
 
   app.use(json());
