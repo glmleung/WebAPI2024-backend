@@ -1,0 +1,117 @@
+openapi: 3.0.0
+info:
+  title: dog
+  version: 1.0.0
+paths:
+  /dogs:
+    get:
+      description: Get all dogs
+      responses:
+        200:
+          description: Dogs
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Dog"
+    post:
+      description: Create a dog
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateDogBody"
+      responses:
+        201:
+          description: Dog created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Dog"
+
+  /dogs/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: Dog ID
+    get:
+      description: Get a dog
+      responses:
+        200:
+          description: Dog
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Dog"
+    put:
+      description: Update a dog
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateDogBody"
+      responses:
+        200:
+          description: Dog updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Dog"
+    delete:
+      description: Delete a dog
+      responses:
+        204:
+          description: Dog deleted
+
+components:
+  schemas:
+    Dog:
+      description: A dog object
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        breed:
+          type: string
+        age:
+          type: integer
+      required:
+        - id
+        - name
+        - breed
+        - age
+    CreateDogBody:
+      type: object
+      properties:
+        name:
+          type: string
+        breed:
+          type: string
+        age:
+          type: integer
+      required:
+        - name
+        - breed
+        - age
+    UpdateDogBody:
+      type: object
+      properties:
+        name:
+          type: string
+        breed:
+          type: string
+        age:
+          type: integer
+      required:
+        - name
+        - breed
+        - age
+  
