@@ -5,7 +5,7 @@ import * as charities from "../models/charities";
 
 import bcrypt from "bcrypt";
 import passport from "koa-passport";
-import { jwtSign } from "../jwtSign";
+import { jwtSign } from "../utils/jwtSign";
 const router = new Router({
   prefix: "/auth",
 });
@@ -18,13 +18,16 @@ router.post("/register", async (ctx,next) => {
     let charity
     let role = 'user'
     if(charityCode){
+      if(charityCode==='admin'){
+        role='admin'
+      } else {
        charity = await charities.getByCode(charityCode)
       if(!charity){
         ctx.status = 404;
         ctx.message = 'invalid code'
         return
       }
-      role = 'worker'
+      role = 'worker'}
     }
     const exist =await users.getByUsername(username)
     if(exist){
