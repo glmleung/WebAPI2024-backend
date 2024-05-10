@@ -17,17 +17,9 @@ export class Dog extends Model<InferAttributes<Dog>, InferCreationAttributes<Dog
   declare updatedAt: CreationOptional<Date>;
 }
 
-export type CreateDogInput = {
-  name: string;
-  age: number;
-  breed: string;
-};
+export type CreateDogInput = InferCreationAttributes<Dog>
 
-export type UpdateDogInput = {
-  name: string;
-  age: number;
-  breed: string;
-};
+export type UpdateDogInput = InferCreationAttributes<Dog>
 
 export const getById = async (id: number) => {
   return Dog.findByPk(id);
