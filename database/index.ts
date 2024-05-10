@@ -64,6 +64,10 @@ User.init(
     createdAt: {
       type: DataTypes.DATE,
     },
+    role:{
+      type: DataTypes.STRING,
+
+    },
   updatedAt: {
     type: DataTypes.DATE,
   },
