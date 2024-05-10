@@ -2,9 +2,21 @@ openapi: 3.0.0
 info:
   title: dog
   version: 1.0.0
+tags:
+  - name: dogs
+    description: Dogs
+  - name: auth
+    description: Auth
+  - name: charities
+    description: Charities
+servers:
+  - url: http://localhost:10888
+
 paths:
   /dogs:
     get:
+      tags:
+        - dogs
       description: Get all dogs
       responses:
         200:
@@ -16,6 +28,8 @@ paths:
                 items:
                   $ref: "#/components/schemas/Dog"
     post:
+      tags:
+        - dogs
       description: Create a dog
       requestBody:
         required: true
@@ -40,6 +54,8 @@ paths:
           type: integer
         description: Dog ID
     get:
+      tags:
+        - dogs
       description: Get a dog
       responses:
         200:
@@ -49,6 +65,8 @@ paths:
               schema:
                 $ref: "#/components/schemas/Dog"
     put:
+      tags:
+        - dogs
       description: Update a dog
       requestBody:
         required: true
@@ -64,13 +82,214 @@ paths:
               schema:
                 $ref: "#/components/schemas/Dog"
     delete:
+      tags:
+        - dogs
       description: Delete a dog
       responses:
         204:
           description: Dog deleted
+  /auth/register:
+    post:
+      tags:
+        - auth
+      description: Register a user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                password:
+                  type: string
+                charityCode:
+                  type: string
+              required:
+                - username
+                - password
 
+      responses:
+        201:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+
+        409:
+          description: User exist
+  /auth/login:
+    post:
+      tags:
+        - auth
+      description: Register a user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                password:
+                  type: string
+              required:
+                - username
+                - password
+
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+        404:
+          description: Wrong username/password
+  /auth/me:
+    get:
+      security:
+        - bearerAuth: []
+
+      tags:
+        - auth
+      description: Get me
+      responses:
+        200:
+          description: me
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+  /charities:
+    get:
+      tags:
+        - charities
+      description: Get all charities
+      responses:
+        200:
+          description: Charities
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Charity"
+    post:
+      security:
+        - bearerAuth: []
+      
+      tags:
+        - charities
+      description: Create a charity
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                codes:
+                  type: array
+                  items:
+                    type: string
+              required:
+                - name
+      responses:
+        201:
+          description: Charity created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Charity"
+    put:
+      security:
+        - bearerAuth: []
+      
+      tags:
+        - charities
+      description: Update a charity
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                codes:
+                  type: array
+                  items:
+                    type: string
+              required:
+                - name
+      responses:
+        200:
+          description: Charity updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Charity"
+    delete:
+      security:
+        - bearerAuth: []
+      
+      tags:
+        - charities
+      description: Delete a charity
+      responses:
+        204:
+          description: Charity deleted
 components:
+  securitySchemes:
+    bearerAuth: # arbitrary name for the security scheme
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
   schemas:
+    User:
+      description: A user object
+      type: object
+      properties:
+        id:
+          type: integer
+        username:
+          type: string
+        role:
+          type: string
+        charityId:
+          type: integer
+      required:
+        - id
+        - username
+        - role
+    Charity:
+      description: A charity object
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        codes:
+          type: array
+          items:
+            type: string
+      required:
+        - id
+        - name
     Dog:
       description: A dog object
       type: object
@@ -114,4 +333,3 @@ components:
         - name
         - breed
         - age
-  

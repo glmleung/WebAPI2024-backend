@@ -59,7 +59,7 @@ router.post("/login", async (ctx) => {
 
   const user = await users.getByUsername(username);
   if (!user) {
-    ctx.status = 401;
+    ctx.status = 404;
     return;
   }
   if (bcrypt.compareSync(password, user.password)) {
@@ -69,7 +69,7 @@ router.post("/login", async (ctx) => {
       }),
     };
   } else {
-    ctx.status = 401;
+    ctx.status = 404;
   }
 });
 router.get("/me", passport.authenticate("jwt", { session: false }), (ctx) => {
