@@ -18,7 +18,7 @@ db.define(
       type: DataTypes.STRING,
     },
     age: {
-      type: DataTypes.DECIMAL,
+      type: DataTypes.FLOAT
     },
     breed: {
       type: DataTypes.STRING,

@@ -1,4 +1,3 @@
-import { QueryTypes } from "sequelize";
 import { db } from "../database";
 
 export type Dog = {
@@ -21,30 +20,15 @@ export type UpdateDogInput = {
 };
 
 export const getById = async (id: number) => {
-  const dogs = await db.query(`select * from dogs where id = ? limit 1`, {
-    replacements: [id],
-    type: QueryTypes.SELECT,
-  });
-  return dogs[0] || null;
+  return db.models.dogs.findByPk(id);
 };
 
 export const getAll = async () => {
-  const dogs = await db.query(`select * from dogs`, {
-    type: QueryTypes.SELECT,
-  });
-  return dogs;
+  return db.models.dogs.findAll();
 };
 
 export const create = async (dog: CreateDogInput) => {
-  const [results, meta] = await db.query(
-    `insert into dogs (name, age, breed) values (?, ?, ?) returning *`,
-    {
-      replacements: [dog.name, dog.age, dog.breed],
-      type: QueryTypes.INSERT,
-    }
-  );
-
-  return (results as any)[0];
+  return db.models.dogs.create(dog);
 };
 
 export const update = async (id: number, dog: UpdateDogInput) => {
@@ -53,9 +37,10 @@ export const update = async (id: number, dog: UpdateDogInput) => {
     return null;
   }
 
-  await db.query(`update dogs set name = ?, age = ?, breed = ? where id = ?`, {
-    replacements: [dog.name, dog.age, dog.breed, id],
-    type: QueryTypes.UPDATE,
+  await db.models.dogs.update(dog, {
+    where: {
+      id: id,
+    },
   });
 
   return getById(id);
@@ -66,9 +51,7 @@ export const remove = async (id: number): Promise<boolean> => {
   if (!existingDog) {
     return false;
   }
-  await db.query(`delete from dogs where id = ?`, {
-    replacements: [id],
-    type: QueryTypes.DELETE,
-  });
+
+  await existingDog.destroy()
   return true;
 };
