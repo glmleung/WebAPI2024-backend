@@ -21,7 +21,7 @@ declare global {
 
 async function run() {
   await sequelize.authenticate();
-  await sequelize.sync({force:true});
+  await sequelize.sync({ force: true });
   const app: Koa = new Koa();
   app.use(cors());
   app.use(serve("./docs"));

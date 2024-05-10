@@ -9,32 +9,32 @@ import {
   CreationAttributes,
 } from "sequelize";
 
-export class Charity extends Model<InferAttributes<Charity>, InferCreationAttributes<Charity>> {
+export class Charity extends Model<
+  InferAttributes<Charity>,
+  InferCreationAttributes<Charity>
+> {
   declare id: CreationOptional<number>;
   declare name: string;
   declare createdAt: CreationOptional<Date>;
   declare updatedAt: CreationOptional<Date>;
-  declare codes: CreationOptional<string[]>
+  declare codes: CreationOptional<string[]>;
 }
 
+export type CreateCharityInput = CreationAttributes<Charity>;
 
-export type CreateCharityInput = CreationAttributes<Charity>
-
-export type UpdateCharityInput = CreationAttributes<Charity>
+export type UpdateCharityInput = CreationAttributes<Charity>;
 
 export const getById = async (id: number) => {
-  return Charity.findByPk(id,{include:['dogs']});
+  return Charity.findByPk(id, { include: ["dogs"] });
 };
 
 export const getByCode = async (code: string) => {
   return Charity.findOne({
     where: {
-     codes: [code],
+      codes: [code],
     },
   });
-
-
-}
+};
 
 export const getAll = async () => {
   return Charity.findAll();

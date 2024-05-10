@@ -1,11 +1,11 @@
 import Router from "koa-router";
-import * as users from '../models/users'
+import * as users from "../models/users";
 const router = new Router({
   prefix: "/users",
 });
 
 router.get("/", async (ctx) => {
-  ctx.body =await users.getAll();
+  ctx.body = await users.getAll();
 });
 
 router.get("/:id", async (ctx) => {

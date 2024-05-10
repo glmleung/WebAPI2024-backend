@@ -39,10 +39,9 @@ export const getAll = async () => {
 };
 
 export const create = async (dog: CreateDogInput) => {
-  
   return Dog.create(dog).catch((e) => {
     console.log(e);
-    throw e
+    throw e;
   });
 };
 

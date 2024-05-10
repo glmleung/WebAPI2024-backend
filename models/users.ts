@@ -12,40 +12,41 @@ import {
 } from "sequelize";
 import { Charity } from "./charities";
 
-export class User extends Model<InferAttributes<User>, InferCreationAttributes<User>> {
+export class User extends Model<
+  InferAttributes<User>,
+  InferCreationAttributes<User>
+> {
   declare id: CreationOptional<number>;
   declare username: string;
   declare password: string;
-  declare charityId?: ForeignKey<Charity['id']>;
-  declare charity?: NonAttribute<Charity>
+  declare charityId?: ForeignKey<Charity["id"]>;
+  declare charity?: NonAttribute<Charity>;
   declare role: string;
   declare createdAt: CreationOptional<Date>;
   declare updatedAt: CreationOptional<Date>;
 }
 
-export type CreateUserInput = CreationAttributes<User>
+export type CreateUserInput = CreationAttributes<User>;
 
-export type UpdateUserInput = CreationAttributes<User>
+export type UpdateUserInput = CreationAttributes<User>;
 
 export const getById = async (id: number) => {
-  return User.findByPk(id,{attributes:{exclude:['password']}});
+  return User.findByPk(id, { attributes: { exclude: ["password"] } });
 };
 
 export const getByUsername = async (username: string) => {
   return User.findOne({
     where: {
-     username,
+      username,
     },
   });
-
-}
+};
 
 export const getAll = async () => {
   return User.findAll();
 };
 
 export const create = async (user: CreateUserInput) => {
-
   return User.create(user);
 };
 
