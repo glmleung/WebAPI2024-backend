@@ -6,10 +6,11 @@ import passport from "koa-passport";
 import serve from "koa-static";
 import cors from "@koa/cors";
 import { router as dogRoutes } from "./routes/dogs.routes";
-import { db } from "./database";
+import { sequelize } from "./database";
 
 async function run() {
-  await db.sync();
+  await sequelize.authenticate()
+  await sequelize.sync({ force: true });
   const app: Koa = new Koa();
   app.use(cors());
   app.use(serve("./docs"));

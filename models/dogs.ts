@@ -1,11 +1,21 @@
-import { db } from "../database";
+import {
+  Sequelize,
+  QueryTypes,
+  DataTypes,
+  Model,
+  InferAttributes,
+  InferCreationAttributes,
+  CreationOptional,
+} from "sequelize";
 
-export type Dog = {
-  id: number;
-  name: string;
-  age: number;
-  breed: string;
-};
+export class Dog extends Model<InferAttributes<Dog>, InferCreationAttributes<Dog>> {
+  declare id: CreationOptional<number>;
+  declare name: string;
+  declare age: number;
+  declare breed: string;
+  declare createdAt: CreationOptional<Date>;
+  declare updatedAt: CreationOptional<Date>;
+}
 
 export type CreateDogInput = {
   name: string;
@@ -20,15 +30,15 @@ export type UpdateDogInput = {
 };
 
 export const getById = async (id: number) => {
-  return db.models.dogs.findByPk(id);
+  return Dog.findByPk(id);
 };
 
 export const getAll = async () => {
-  return db.models.dogs.findAll();
+  return Dog.findAll();
 };
 
 export const create = async (dog: CreateDogInput) => {
-  return db.models.dogs.create(dog);
+  return Dog.create(dog);
 };
 
 export const update = async (id: number, dog: UpdateDogInput) => {
@@ -37,7 +47,7 @@ export const update = async (id: number, dog: UpdateDogInput) => {
     return null;
   }
 
-  await db.models.dogs.update(dog, {
+  await Dog.update(dog, {
     where: {
       id: id,
     },
@@ -52,6 +62,6 @@ export const remove = async (id: number): Promise<boolean> => {
     return false;
   }
 
-  await existingDog.destroy()
+  await existingDog.destroy();
   return true;
 };

@@ -1,13 +1,23 @@
-import { Sequelize, QueryTypes, DataTypes } from "sequelize";
+import {
+  Sequelize,
+  QueryTypes,
+  DataTypes,
+  Model,
+  InferAttributes,
+  InferCreationAttributes,
+  CreationOptional,
+} from "sequelize";
 import { config } from "./config";
+import { Dog } from "../models/dogs";
+import { User } from "../models/users";
 
-const db = new Sequelize(
+const sequelize = new Sequelize(
   `postgres://${config.user}:${config.password}@${config.host}:${config.port}/${config.database}`,
   { dialect: "postgres" }
 );
 
-db.define(
-  "dogs",
+
+Dog.init(
   {
     id: {
       type: DataTypes.INTEGER,
@@ -18,14 +28,50 @@ db.define(
       type: DataTypes.STRING,
     },
     age: {
-      type: DataTypes.FLOAT
+      type: DataTypes.FLOAT,
     },
     breed: {
       type: DataTypes.STRING,
     },
+    createdAt: {
+      type: DataTypes.DATE,
+    },
+    updatedAt: {
+      type: DataTypes.DATE,
+    },
   },
   {
-    timestamps: false,
+    tableName: "dogs",
+    sequelize,
   }
 );
-export { db };
+
+
+
+User.init(
+  {
+    id: {
+      type: DataTypes.INTEGER,
+      autoIncrement: true,
+      primaryKey: true,
+    },
+    username: {
+      type: DataTypes.STRING,
+    },
+    password: {
+      type: DataTypes.STRING,
+    },
+    createdAt: {
+      type: DataTypes.DATE,
+    },
+  updatedAt: {
+    type: DataTypes.DATE,
+  },
+  },
+  {
+    tableName: "users",
+    sequelize,
+  }
+);
+
+export { sequelize   };
