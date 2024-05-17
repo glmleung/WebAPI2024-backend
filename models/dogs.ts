@@ -34,8 +34,16 @@ export const getById = async (id: number) => {
   return Dog.findByPk(id);
 };
 
-export const getAll = async () => {
-  return Dog.findAll();
+export const getAll = async (options?:{charityId?: number, loadCharity?:boolean }) => {
+  if (options?.charityId) {
+    return Dog.findAll({
+      where: {
+        charityId: options.charityId,
+      },
+      order:[["id",'desc']]
+    });
+  }
+  return Dog.findAll({order:[["id",'desc']], include:options?.loadCharity?["charity"]:undefined});
 };
 
 export const create = async (dog: CreateDogInput) => {

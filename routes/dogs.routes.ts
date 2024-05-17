@@ -8,7 +8,7 @@ const router = new Router({
 
 router.get("/", async (ctx) => {
   // get all dogs
-  ctx.body = await dogs.getAll();
+  ctx.body = await dogs.getAll({loadCharity:true});
 });
 router.get("/:id", async (ctx) => {
   // get one dog

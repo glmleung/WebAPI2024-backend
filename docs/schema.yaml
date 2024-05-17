@@ -264,6 +264,27 @@ paths:
       responses:
         204:
           description: Charity deleted
+  /charities/{id}/dogs:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: Charity ID
+    get:
+      tags:
+        - dogs
+      description: Get all dogs for a charity
+      responses:
+        200:
+          description: Dogs
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Dog"
   /charities/{id}/codes/{code}:
     parameters:
       - name: id
@@ -356,11 +377,16 @@ components:
           type: string
         age:
           type: integer
+        charityId:
+          type: integer
+        charity:
+          $ref: "#/components/schemas/Charity"
       required:
         - id
         - name
         - breed
         - age
+        - charityId
     CreateDogBody:
       type: object
       properties:

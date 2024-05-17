@@ -1,5 +1,6 @@
 import Router from "koa-router";
 import * as charities from "../models/charities";
+import * as dogs from "../models/dogs";
 import passport from "koa-passport";
 import { requireRole } from "../utils/requireRole";
 
@@ -20,6 +21,11 @@ router.get("/:id", async (ctx) => {
     return;
   }
   ctx.body = charity;
+});
+router.get("/:id/dogs", async (ctx) => {
+
+
+  ctx.body =await dogs.getAll({charityId:parseInt(ctx.params.id)})
 });
 router.post(
   "/:id/codes/:code",
