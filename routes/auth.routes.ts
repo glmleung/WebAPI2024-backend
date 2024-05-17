@@ -33,6 +33,7 @@ router.post("/register", async (ctx, next) => {
   const exist = await users.getByUsername(username);
   if (exist) {
     ctx.status = 409;
+    ctx.message = "username already exists";
     return;
   }
   const hashedPassword = bcrypt.hashSync(password, 10);
@@ -59,7 +60,8 @@ router.post("/login", async (ctx) => {
 
   const user = await users.getByUsername(username);
   if (!user) {
-    ctx.status = 404;
+    ctx.status = 400;
+    ctx.message = 'invalid username or password'
     return;
   }
   if (bcrypt.compareSync(password, user.password)) {
