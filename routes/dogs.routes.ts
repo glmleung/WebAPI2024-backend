@@ -1,5 +1,6 @@
 import Router from "koa-router";
 import * as dogs from "../models/dogs";
+import * as likes from "../models/likes";
 import passport from "koa-passport";
 import { requireRole } from "../utils/requireRole";
 const router = new Router({
@@ -57,6 +58,23 @@ router.put(
     ctx.body = updatedDog;
   }
 );
+
+router.post("/:id/like", passport.authenticate("jwt", { session: false }), async (ctx) => {
+  const userId = ctx.state.user.id;
+  const dogId = parseInt(ctx.params.id);
+  await likes.createLike(userId, dogId).catch(e => {
+    // ignore duplicate like
+  });
+  ctx.status = 201
+})
+router.delete("/:id/like", passport.authenticate("jwt", { session: false }), async (ctx) => {
+  const userId = ctx.state.user.id;
+  const dogId = parseInt(ctx.params.id);
+  await likes.removeLike(userId, dogId).catch(e => {
+    // ignore if like doesn't exist
+  });
+  ctx.status = 204
+})
 router.delete(
   "/:id",
   passport.authenticate("jwt", { session: false }),

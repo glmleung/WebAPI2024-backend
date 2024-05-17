@@ -11,6 +11,7 @@ import { config } from "./config";
 import { Charity } from "../models/charities";
 import { Dog } from "../models/dogs";
 import { User } from "../models/users";
+import { Like } from "../models/likes";
 
 const sequelize = new Sequelize(
   `postgres://${config.user}:${config.password}@${config.host}:${config.port}/${config.database}`,
@@ -120,6 +121,30 @@ Charity.init( {
 tableName: "charities",
 })
 
+Like.init(
+  {
+    userId:{
+      type:DataTypes.INTEGER,
+      allowNull:false,
+      primaryKey:true
+    },
+    dogId: {
+      type: DataTypes.INTEGER,
+    allowNull:false,primaryKey:true
+  },
+    createdAt: {
+      type: DataTypes.DATE,
+    },
+    updatedAt: {
+      type: DataTypes.DATE,
+    },
+  },
+  {
+    tableName: "likes",
+    sequelize,
+  }
+);
+
 Dog.belongsTo(Charity,{
   targetKey:"id",
   foreignKey:"charityId",
@@ -139,6 +164,29 @@ Charity.hasMany(User,{
   sourceKey:"id",
   foreignKey:"charityId",
   as:"workers"
+})
+Like.belongsTo(User,{
+  targetKey:"id",
+  foreignKey:"userId",
+  as:"user"
+})
+
+User.hasMany(Like,{
+  sourceKey:"id",
+  foreignKey:"userId",
+  as:"likedDogs"
+})
+
+Like.belongsTo(Dog,{
+  targetKey:"id",
+  foreignKey:"dogId",
+  as:"dog"
+})
+
+Dog.hasMany(Like,{
+  sourceKey:"id",
+  foreignKey:"dogId",
+  as:"likedByUsers"
 })
 
 export { sequelize   };

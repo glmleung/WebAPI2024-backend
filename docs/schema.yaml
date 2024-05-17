@@ -88,6 +88,28 @@ paths:
       responses:
         204:
           description: Dog deleted
+  /dogs/{id}/like:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: Dog ID
+    post:
+      tags:
+        - dogs
+      description: Like a dog
+      responses:
+        201:
+          description: Dog liked
+    delete:
+      tags:
+        - dogs
+      description: Unlike a dog
+      responses:
+        204:
+          description: Dog unliked
   /auth/register:
     post:
       tags:

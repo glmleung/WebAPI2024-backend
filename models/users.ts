@@ -11,6 +11,8 @@ import {
   CreationAttributes,
 } from "sequelize";
 import { Charity } from "./charities";
+import { Dog } from "./dogs";
+import { Like } from "./likes";
 
 export class User extends Model<
   InferAttributes<User>,
@@ -24,6 +26,8 @@ export class User extends Model<
   declare role: string;
   declare createdAt: CreationOptional<Date>;
   declare updatedAt: CreationOptional<Date>;
+
+  declare likedDogs: NonAttribute<Like[]>;
 }
 
 export type CreateUserInput = CreationAttributes<User>;
@@ -31,7 +35,7 @@ export type CreateUserInput = CreationAttributes<User>;
 export type UpdateUserInput = CreationAttributes<User>;
 
 export const getById = async (id: number) => {
-  return User.findByPk(id, { attributes: { exclude: ["password"] } });
+  return User.findByPk(id, { attributes: { exclude: ["password"]}, include:['likedDogs'] });
 };
 
 export const getByUsername = async (username: string) => {

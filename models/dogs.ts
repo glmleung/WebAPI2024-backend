@@ -11,6 +11,7 @@ import {
   CreationAttributes,
 } from "sequelize";
 import { Charity } from "./charities";
+import { Like } from "./likes";
 
 export class Dog extends Model<
   InferAttributes<Dog>,
@@ -24,6 +25,8 @@ export class Dog extends Model<
   declare charity: NonAttribute<Charity>;
   declare createdAt: CreationOptional<Date>;
   declare updatedAt: CreationOptional<Date>;
+
+  declare likedByUsers: NonAttribute<Like[]>;
 }
 
 export type CreateDogInput = CreationAttributes<Dog>;
@@ -31,19 +34,26 @@ export type CreateDogInput = CreationAttributes<Dog>;
 export type UpdateDogInput = CreationAttributes<Dog>;
 
 export const getById = async (id: number) => {
-  return Dog.findByPk(id);
+  return Dog.findByPk(id, {});
 };
 
-export const getAll = async (options?:{charityId?: number, loadCharity?:boolean }) => {
+export const getAll = async (options?: {
+  charityId?: number;
+  loadCharity?: boolean;
+  userId?: number;
+}) => {
   if (options?.charityId) {
     return Dog.findAll({
       where: {
         charityId: options.charityId,
       },
-      order:[["id",'desc']]
+      order: [["id", "desc"]],
     });
   }
-  return Dog.findAll({order:[["id",'desc']], include:options?.loadCharity?["charity"]:undefined});
+  return Dog.findAll({
+    order: [["id", "desc"]],
+    include: options?.loadCharity ? ["charity"] : undefined,
+  });
 };
 
 export const create = async (dog: CreateDogInput) => {

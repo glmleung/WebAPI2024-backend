@@ -30,20 +30,7 @@ async function run() {
   app.use(logger());
   app.use(bodyParser());
 
-  passport.serializeUser(function (user, done) {
-    done(null, user.id);
-  });
-
-  passport.deserializeUser(function (id: number, done) {
-    UserModel.findByPk(id)
-      .then((user) => {
-        done(null, user);
-      })
-      .catch((err) => {
-        done(err, null);
-      });
-  });
-
+ 
   passport.use(
     new JwtStrategy(
       {
@@ -55,7 +42,7 @@ async function run() {
         if (user) {
           return done(null, user);
         } else {
-          return done(new Error("not fonud"), null);
+          return done(null, null);
         }
       }
     )
