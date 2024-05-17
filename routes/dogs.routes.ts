@@ -7,9 +7,22 @@ const router = new Router({
   prefix: "/dogs",
 });
 
-router.get("/", async (ctx) => {
+
+
+router.get("/", (ctx,next) => {
+  // optional auth
+  if(ctx.request.headers['authorization']){
+    // console.log('here')
+    return passport.authenticate("jwt", {  session: false })(ctx,next)
+  }
+  return next()
+},async (ctx) => {
   // get all dogs
-  ctx.body = await dogs.getAll({loadCharity:true});
+
+  const allDogs = await dogs.getAll({loadCharity:true, userId: ctx.state.user?.id});
+  ctx.body = allDogs.map(dog => {
+    return {...dog.toJSON(), liked: !!ctx.state.user?.id && !!dog.likedByUsers && dog.likedByUsers.length > 0}
+  });
 });
 router.get("/:id", async (ctx) => {
   // get one dog

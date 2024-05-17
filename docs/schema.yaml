@@ -401,6 +401,8 @@ components:
           type: integer
         charityId:
           type: integer
+        liked:
+          type: boolean
         charity:
           $ref: "#/components/schemas/Charity"
       required:

@@ -2,6 +2,7 @@ import {
   Sequelize,
   QueryTypes,
   DataTypes,
+  fn,
   Model,
   InferAttributes,
   InferCreationAttributes,
@@ -9,6 +10,8 @@ import {
   ForeignKey,
   NonAttribute,
   CreationAttributes,
+  Includeable,
+  col,
 } from "sequelize";
 import { Charity } from "./charities";
 import { Like } from "./likes";
@@ -50,10 +53,27 @@ export const getAll = async (options?: {
       order: [["id", "desc"]],
     });
   }
+  let include: Includeable[] = [];
+  if (options?.loadCharity) {
+    include.push("charity");
+  }
+
+  console.log({options})
+  if(options?.userId){
+  include.push({
+    model: Like,
+    as: "likedByUsers",
+    where: {
+      userId: options?.userId,
+    },
+    required: false,
+  });
+}
+
   return Dog.findAll({
     order: [["id", "desc"]],
-    include: options?.loadCharity ? ["charity"] : undefined,
-  });
+    include,
+  })
 };
 
 export const create = async (dog: CreateDogInput) => {

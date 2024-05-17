@@ -148,45 +148,55 @@ Like.init(
 Dog.belongsTo(Charity,{
   targetKey:"id",
   foreignKey:"charityId",
-  as:"charity"
+  as:"charity",
+  onDelete:"CASCADE",
+
 })
 Charity.hasMany(Dog,{
   sourceKey:"id",
   foreignKey:"charityId",
-  as:"dogs"
+  as:"dogs",
+  onDelete:"CASCADE",
 })
 User.belongsTo(Charity,{
   targetKey:"id",
   foreignKey:"charityId",
-  as:"charity"
+  as:"charity",
+  onDelete:"CASCADE",
 })
 Charity.hasMany(User,{
   sourceKey:"id",
   foreignKey:"charityId",
-  as:"workers"
+  as:"workers",
+  onDelete:"CASCADE",
 })
 Like.belongsTo(User,{
   targetKey:"id",
   foreignKey:"userId",
-  as:"user"
+  as:"user",
+  onDelete:"CASCADE",
+
 })
 
 User.hasMany(Like,{
   sourceKey:"id",
   foreignKey:"userId",
-  as:"likedDogs"
+  as:"likedDogs",
+  onDelete:"CASCADE",
 })
 
 Like.belongsTo(Dog,{
   targetKey:"id",
   foreignKey:"dogId",
-  as:"dog"
+  as:"dog",
+  onDelete:"CASCADE",
 })
 
 Dog.hasMany(Like,{
   sourceKey:"id",
   foreignKey:"dogId",
-  as:"likedByUsers"
+  as:"likedByUsers",
+  onDelete:"CASCADE",
 })
 
 export { sequelize   };

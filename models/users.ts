@@ -35,7 +35,7 @@ export type CreateUserInput = CreationAttributes<User>;
 export type UpdateUserInput = CreationAttributes<User>;
 
 export const getById = async (id: number) => {
-  return User.findByPk(id, { attributes: { exclude: ["password"]}, include:['likedDogs'] });
+  return User.findByPk(id, { attributes: { exclude: ["password"]} });
 };
 
 export const getByUsername = async (username: string) => {
