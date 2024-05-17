@@ -21,6 +21,60 @@ router.get("/:id", async (ctx) => {
   }
   ctx.body = charity;
 });
+router.post(
+  "/:id/codes/:code",
+  passport.authenticate("jwt", { session: false }),
+  requireRole(["admin", "worker"]),
+  async (ctx) => {
+    if (
+      ctx.state.user === "worker" &&
+      ctx.state.user.charityId !== parseInt(ctx.params.id)
+    ) {
+      ctx.status = 403;
+      return;
+    }
+
+    const charity = await charities.addCodeToCharity(
+      parseInt(ctx.params.id),
+      ctx.params.code
+    );
+
+    if (!charity) {
+      ctx.status = 400;
+      ctx.message = "Invalid data";
+      return;
+    }
+    ctx.state = 201;
+    ctx.body = charity;
+  }
+);
+router.delete(
+  "/:id/codes/:code",
+  passport.authenticate("jwt", { session: false }),
+  requireRole(["admin", "worker"]),
+  async (ctx) => {
+    if (
+      ctx.state.user === "worker" &&
+      ctx.state.user.charityId !== parseInt(ctx.params.id)
+    ) {
+      ctx.status = 403;
+      return;
+    }
+
+    const charity = await charities.deleteCodeFromCharity(
+      parseInt(ctx.params.id),
+      ctx.params.code
+    );
+
+    if (!charity) {
+      ctx.status = 400;
+      ctx.message = "Invalid data";
+      return;
+    }
+    ctx.state = 201;
+    ctx.body = charity;
+  }
+);
 
 router.post(
   "/",

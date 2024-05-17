@@ -217,6 +217,14 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Charity"
+  /charities/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: Charity ID
     put:
       security:
         - bearerAuth: []
@@ -246,14 +254,6 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Charity"
-  /charities/{id}:
-    parameters:
-      - name: id
-        in: path
-        required: true
-        schema:
-          type: integer
-        description: Charity ID
     delete:
       security:
         - bearerAuth: []
@@ -264,6 +264,48 @@ paths:
       responses:
         204:
           description: Charity deleted
+  /charities/{id}/codes/{code}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: Charity ID
+      - name: code
+        in: path
+        required: true
+        schema:
+          type: string
+        description: Code
+    post:
+      security:
+        - bearerAuth: []
+
+      tags:
+        - charities
+      description: Add a code to a charity
+
+      responses:
+        201:
+          description: Code added
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+    delete:
+      security:
+        - bearerAuth: []
+      tags:
+        - charities
+      description: Delete a code from a charity
+      responses:
+        204:
+          description: Code deleted
+
 components:
   securitySchemes:
     bearerAuth: # arbitrary name for the security scheme

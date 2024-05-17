@@ -7,6 +7,7 @@ import {
   InferCreationAttributes,
   CreationOptional,
   CreationAttributes,
+  Op,
 } from "sequelize";
 
 export class Charity extends Model<
@@ -31,13 +32,51 @@ export const getById = async (id: number) => {
 export const getByCode = async (code: string) => {
   return Charity.findOne({
     where: {
-      codes: [code],
+      codes: { [Op.contains]: [code] },
     },
   });
 };
 
+export const addCodeToCharity = async (id: number, code: string) => {
+  const existingCharity = await getByCode(code);
+  if (existingCharity) {
+    return false;
+  }
+
+  await Charity.update(
+    {
+      codes: Charity.sequelize?.fn(
+        "array_append",
+        Charity.sequelize.col("codes"),
+        code
+      ),
+    },
+
+    { where: { id } }
+  );
+  return getById(id);
+};
+export const deleteCodeFromCharity = async (id: number, code: string) => {
+  const existingCharity = await getByCode(code);
+  if (!existingCharity) {
+    return false;
+  }
+
+  await Charity.update(
+    {
+      codes: Charity.sequelize?.fn(
+        "array_remove",
+        Charity.sequelize.col("codes"),
+        code
+      ),
+    },
+    { where: { id } }
+  );
+  return getById(id);
+}
+
 export const getAll = async () => {
-  return Charity.findAll();
+  return Charity.findAll({ order: [["createdAt", "desc"]] });
 };
 
 export const create = async (charity: CreateCharityInput) => {
