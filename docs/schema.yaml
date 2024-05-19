@@ -393,6 +393,8 @@ components:
       properties:
         id:
           type: integer
+        image:
+          type: string
         name:
           type: string
         breed:
@@ -420,10 +422,13 @@ components:
           type: string
         age:
           type: integer
+        image:
+          type: string
       required:
         - name
         - breed
         - age
+        - image
     UpdateDogBody:
       type: object
       properties:
@@ -433,7 +438,10 @@ components:
           type: string
         age:
           type: integer
+        image:
+          type: number
       required:
         - name
         - breed
         - age
+        - image

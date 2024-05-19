@@ -73,7 +73,7 @@ export const deleteCodeFromCharity = async (id: number, code: string) => {
     { where: { id } }
   );
   return getById(id);
-}
+};
 
 export const getAll = async () => {
   return Charity.findAll({ order: [["createdAt", "desc"]] });

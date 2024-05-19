@@ -24,6 +24,7 @@ export class Dog extends Model<
   declare name: string;
   declare age: number;
   declare breed: string;
+  declare image: string;
   declare charityId: ForeignKey<Charity["id"]>;
   declare charity: NonAttribute<Charity>;
   declare createdAt: CreationOptional<Date>;
@@ -58,22 +59,22 @@ export const getAll = async (options?: {
     include.push("charity");
   }
 
-  console.log({options})
-  if(options?.userId){
-  include.push({
-    model: Like,
-    as: "likedByUsers",
-    where: {
-      userId: options?.userId,
-    },
-    required: false,
-  });
-}
+  console.log({ options });
+  if (options?.userId) {
+    include.push({
+      model: Like,
+      as: "likedByUsers",
+      where: {
+        userId: options?.userId,
+      },
+      required: false,
+    });
+  }
 
   return Dog.findAll({
     order: [["id", "desc"]],
     include,
-  })
+  });
 };
 
 export const create = async (dog: CreateDogInput) => {

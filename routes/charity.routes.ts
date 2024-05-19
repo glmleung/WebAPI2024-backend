@@ -23,9 +23,7 @@ router.get("/:id", async (ctx) => {
   ctx.body = charity;
 });
 router.get("/:id/dogs", async (ctx) => {
-
-
-  ctx.body =await dogs.getAll({charityId:parseInt(ctx.params.id)})
+  ctx.body = await dogs.getAll({ charityId: parseInt(ctx.params.id) });
 });
 router.post(
   "/:id/codes/:code",

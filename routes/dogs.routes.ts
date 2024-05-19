@@ -7,23 +7,34 @@ const router = new Router({
   prefix: "/dogs",
 });
 
+router.get(
+  "/",
+  (ctx, next) => {
+    // optional auth
+    if (ctx.request.headers["authorization"]) {
+      // console.log('here')
+      return passport.authenticate("jwt", { session: false })(ctx, next);
+    }
+    return next();
+  },
+  async (ctx) => {
+    // get all dogs
 
-
-router.get("/", (ctx,next) => {
-  // optional auth
-  if(ctx.request.headers['authorization']){
-    // console.log('here')
-    return passport.authenticate("jwt", {  session: false })(ctx,next)
+    const allDogs = await dogs.getAll({
+      loadCharity: true,
+      userId: ctx.state.user?.id,
+    });
+    ctx.body = allDogs.map((dog) => {
+      return {
+        ...dog.toJSON(),
+        liked:
+          !!ctx.state.user?.id &&
+          !!dog.likedByUsers &&
+          dog.likedByUsers.length > 0,
+      };
+    });
   }
-  return next()
-},async (ctx) => {
-  // get all dogs
-
-  const allDogs = await dogs.getAll({loadCharity:true, userId: ctx.state.user?.id});
-  ctx.body = allDogs.map(dog => {
-    return {...dog.toJSON(), liked: !!ctx.state.user?.id && !!dog.likedByUsers && dog.likedByUsers.length > 0}
-  });
-});
+);
 router.get("/:id", async (ctx) => {
   // get one dog
   const dog = await dogs.getById(parseInt(ctx.params.id));
@@ -72,22 +83,30 @@ router.put(
   }
 );
 
-router.post("/:id/like", passport.authenticate("jwt", { session: false }), async (ctx) => {
-  const userId = ctx.state.user.id;
-  const dogId = parseInt(ctx.params.id);
-  await likes.createLike(userId, dogId).catch(e => {
-    // ignore duplicate like
-  });
-  ctx.status = 201
-})
-router.delete("/:id/like", passport.authenticate("jwt", { session: false }), async (ctx) => {
-  const userId = ctx.state.user.id;
-  const dogId = parseInt(ctx.params.id);
-  await likes.removeLike(userId, dogId).catch(e => {
-    // ignore if like doesn't exist
-  });
-  ctx.status = 204
-})
+router.post(
+  "/:id/like",
+  passport.authenticate("jwt", { session: false }),
+  async (ctx) => {
+    const userId = ctx.state.user.id;
+    const dogId = parseInt(ctx.params.id);
+    await likes.createLike(userId, dogId).catch((e) => {
+      // ignore duplicate like
+    });
+    ctx.status = 201;
+  }
+);
+router.delete(
+  "/:id/like",
+  passport.authenticate("jwt", { session: false }),
+  async (ctx) => {
+    const userId = ctx.state.user.id;
+    const dogId = parseInt(ctx.params.id);
+    await likes.removeLike(userId, dogId).catch((e) => {
+      // ignore if like doesn't exist
+    });
+    ctx.status = 204;
+  }
+);
 router.delete(
   "/:id",
   passport.authenticate("jwt", { session: false }),

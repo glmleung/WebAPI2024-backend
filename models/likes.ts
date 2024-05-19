@@ -25,19 +25,18 @@ export class Like extends Model<
   declare updatedAt: CreationOptional<Date>;
 }
 
-
 export const createLike = async (userId: number, dogId: number) => {
   return Like.create({
-    dogId,userId
+    dogId,
+    userId,
   });
-}
+};
 
 export const removeLike = async (userId: number, dogId: number) => {
   return Like.destroy({
-    where:{
-      dogId,userId
-    }
+    where: {
+      dogId,
+      userId,
+    },
   });
-}
-
-
+};

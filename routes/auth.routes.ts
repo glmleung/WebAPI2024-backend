@@ -61,7 +61,7 @@ router.post("/login", async (ctx) => {
   const user = await users.getByUsername(username);
   if (!user) {
     ctx.status = 400;
-    ctx.message = 'invalid username or password'
+    ctx.message = "invalid username or password";
     return;
   }
   if (bcrypt.compareSync(password, user.password)) {

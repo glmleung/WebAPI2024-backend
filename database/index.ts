@@ -18,31 +18,34 @@ const sequelize = new Sequelize(
   { dialect: "postgres" }
 );
 
-
 Dog.init(
   {
     id: {
       type: DataTypes.INTEGER,
       autoIncrement: true,
       primaryKey: true,
-    allowNull:false
+      allowNull: false,
     },
-    charityId:{
-      type:DataTypes.INTEGER,
-      allowNull:false
+    charityId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
     },
     name: {
       type: DataTypes.STRING,
-    allowNull:false
-  },
+      allowNull: false,
+    },
     age: {
       type: DataTypes.FLOAT,
-    allowNull:false
-  },
+      allowNull: false,
+    },
     breed: {
       type: DataTypes.STRING,
-    allowNull:false
-  },
+      allowNull: false,
+    },
+    image: {
+      type: DataTypes.TEXT,
+      allowNull: false,
+    },
     createdAt: {
       type: DataTypes.DATE,
     },
@@ -56,39 +59,35 @@ Dog.init(
   }
 );
 
-
-
 User.init(
   {
     id: {
       type: DataTypes.INTEGER,
       autoIncrement: true,
       primaryKey: true,
-    allowNull:false
-
+      allowNull: false,
     },
-    charityId:{
-      type:DataTypes.INTEGER,
-      allowNull:true
+    charityId: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
     },
     username: {
       type: DataTypes.STRING,
-    allowNull:false
-  },
+      allowNull: false,
+    },
     password: {
       type: DataTypes.STRING,
-    allowNull:false
-  },
+      allowNull: false,
+    },
     createdAt: {
       type: DataTypes.DATE,
     },
-    role:{
+    role: {
       type: DataTypes.STRING,
-
     },
-  updatedAt: {
-    type: DataTypes.DATE,
-  },
+    updatedAt: {
+      type: DataTypes.DATE,
+    },
   },
   {
     tableName: "users",
@@ -96,42 +95,46 @@ User.init(
   }
 );
 
-Charity.init( {
-  id: {
-    type: DataTypes.INTEGER,
-    autoIncrement: true,
-    primaryKey: true,
+Charity.init(
+  {
+    id: {
+      type: DataTypes.INTEGER,
+      autoIncrement: true,
+      primaryKey: true,
+    },
+    name: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    createdAt: {
+      type: DataTypes.DATE,
+    },
+    updatedAt: {
+      type: DataTypes.DATE,
+    },
+    codes: {
+      type: DataTypes.ARRAY(DataTypes.STRING),
+      defaultValue: [],
+    },
   },
-  name: {
-    type: DataTypes.STRING,
-    allowNull:false
-  },
-  createdAt: {
-    type: DataTypes.DATE,
-  },
-  updatedAt: {
-    type: DataTypes.DATE,
-  },
-  codes: {
-    type: DataTypes.ARRAY(DataTypes.STRING),
-    defaultValue:[]
-  },
-}, {
-  sequelize,
-tableName: "charities",
-})
+  {
+    sequelize,
+    tableName: "charities",
+  }
+);
 
 Like.init(
   {
-    userId:{
-      type:DataTypes.INTEGER,
-      allowNull:false,
-      primaryKey:true
+    userId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      primaryKey: true,
     },
     dogId: {
       type: DataTypes.INTEGER,
-    allowNull:false,primaryKey:true
-  },
+      allowNull: false,
+      primaryKey: true,
+    },
     createdAt: {
       type: DataTypes.DATE,
     },
@@ -145,58 +148,56 @@ Like.init(
   }
 );
 
-Dog.belongsTo(Charity,{
-  targetKey:"id",
-  foreignKey:"charityId",
-  as:"charity",
-  onDelete:"CASCADE",
+Dog.belongsTo(Charity, {
+  targetKey: "id",
+  foreignKey: "charityId",
+  as: "charity",
+  onDelete: "CASCADE",
+});
+Charity.hasMany(Dog, {
+  sourceKey: "id",
+  foreignKey: "charityId",
+  as: "dogs",
+  onDelete: "CASCADE",
+});
+User.belongsTo(Charity, {
+  targetKey: "id",
+  foreignKey: "charityId",
+  as: "charity",
+  onDelete: "CASCADE",
+});
+Charity.hasMany(User, {
+  sourceKey: "id",
+  foreignKey: "charityId",
+  as: "workers",
+  onDelete: "CASCADE",
+});
+Like.belongsTo(User, {
+  targetKey: "id",
+  foreignKey: "userId",
+  as: "user",
+  onDelete: "CASCADE",
+});
 
-})
-Charity.hasMany(Dog,{
-  sourceKey:"id",
-  foreignKey:"charityId",
-  as:"dogs",
-  onDelete:"CASCADE",
-})
-User.belongsTo(Charity,{
-  targetKey:"id",
-  foreignKey:"charityId",
-  as:"charity",
-  onDelete:"CASCADE",
-})
-Charity.hasMany(User,{
-  sourceKey:"id",
-  foreignKey:"charityId",
-  as:"workers",
-  onDelete:"CASCADE",
-})
-Like.belongsTo(User,{
-  targetKey:"id",
-  foreignKey:"userId",
-  as:"user",
-  onDelete:"CASCADE",
+User.hasMany(Like, {
+  sourceKey: "id",
+  foreignKey: "userId",
+  as: "likedDogs",
+  onDelete: "CASCADE",
+});
 
-})
+Like.belongsTo(Dog, {
+  targetKey: "id",
+  foreignKey: "dogId",
+  as: "dog",
+  onDelete: "CASCADE",
+});
 
-User.hasMany(Like,{
-  sourceKey:"id",
-  foreignKey:"userId",
-  as:"likedDogs",
-  onDelete:"CASCADE",
-})
+Dog.hasMany(Like, {
+  sourceKey: "id",
+  foreignKey: "dogId",
+  as: "likedByUsers",
+  onDelete: "CASCADE",
+});
 
-Like.belongsTo(Dog,{
-  targetKey:"id",
-  foreignKey:"dogId",
-  as:"dog",
-  onDelete:"CASCADE",
-})
-
-Dog.hasMany(Like,{
-  sourceKey:"id",
-  foreignKey:"dogId",
-  as:"likedByUsers",
-  onDelete:"CASCADE",
-})
-
-export { sequelize   };
+export { sequelize };

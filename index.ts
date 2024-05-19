@@ -21,16 +21,15 @@ declare global {
 
 async function run() {
   await sequelize.authenticate();
-  await sequelize.sync({ force:true });
+  await sequelize.sync({ force: false });
   const app: Koa = new Koa();
   app.use(cors());
   app.use(serve("./docs"));
   app.use(passport.initialize());
   app.use(json());
   app.use(logger());
-  app.use(bodyParser());
+  app.use(bodyParser({ jsonLimit: "5mb" }));
 
- 
   passport.use(
     new JwtStrategy(
       {
