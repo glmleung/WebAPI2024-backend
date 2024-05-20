@@ -78,27 +78,25 @@ export const getAll = async (options?: {
   const ageFrom = options?.searchParams?.get("ageFrom");
   const ageTo = options?.searchParams?.get("ageTo");
 
-  const where: WhereOptions<Dog> = {
-
-  }
+  const where: WhereOptions<Dog> = {};
 
   if (breed) {
     where.breed = {
-      [Op.iLike]: `%${breed}%`
-    }
+      [Op.iLike]: `%${breed}%`,
+    };
   }
   if (name) {
     where.name = {
-      [Op.iLike]: `%${name}%`
-    }
+      [Op.iLike]: `%${name}%`,
+    };
   }
 
   if (ageFrom) {
-    if(!where.age) where.age = {}
+    if (!where.age) where.age = {};
     where.age[Op.gte] = parseInt(ageFrom);
   }
   if (ageTo) {
-    if(!where.age) where.age = {}
+    if (!where.age) where.age = {};
 
     where.age[Op.lte] = parseInt(ageTo);
   }

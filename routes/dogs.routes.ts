@@ -21,7 +21,7 @@ router.get(
     const allDogs = await dogs.getAll({
       loadCharity: true,
       userId: ctx.state.user?.id,
-     searchParams: new URLSearchParams(ctx.request.search)
+      searchParams: new URLSearchParams(ctx.request.search),
     });
     ctx.body = allDogs.map((dog) => {
       return {
