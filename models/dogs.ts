@@ -12,6 +12,8 @@ import {
   CreationAttributes,
   Includeable,
   col,
+  Op,
+  WhereOptions,
 } from "sequelize";
 import { Charity } from "./charities";
 import { Like } from "./likes";
@@ -45,6 +47,7 @@ export const getAll = async (options?: {
   charityId?: number;
   loadCharity?: boolean;
   userId?: number;
+  searchParams?: any;
 }) => {
   if (options?.charityId) {
     return Dog.findAll({
@@ -59,7 +62,6 @@ export const getAll = async (options?: {
     include.push("charity");
   }
 
-  console.log({ options });
   if (options?.userId) {
     include.push({
       model: Like,
@@ -71,9 +73,40 @@ export const getAll = async (options?: {
     });
   }
 
+  const breed = options?.searchParams?.get("breed");
+  const name = options?.searchParams?.get("name");
+  const ageFrom = options?.searchParams?.get("ageFrom");
+  const ageTo = options?.searchParams?.get("ageTo");
+
+  const where: WhereOptions<Dog> = {
+
+  }
+
+  if (breed) {
+    where.breed = {
+      [Op.iLike]: `%${breed}%`
+    }
+  }
+  if (name) {
+    where.name = {
+      [Op.iLike]: `%${name}%`
+    }
+  }
+
+  if (ageFrom) {
+    if(!where.age) where.age = {}
+    where.age[Op.gte] = parseInt(ageFrom);
+  }
+  if (ageTo) {
+    if(!where.age) where.age = {}
+
+    where.age[Op.lte] = parseInt(ageTo);
+  }
+
   return Dog.findAll({
     order: [["id", "desc"]],
     include,
+    where,
   });
 };
 

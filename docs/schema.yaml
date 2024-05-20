@@ -15,6 +15,27 @@ servers:
 paths:
   /dogs:
     get:
+      parameters:
+        - name: breed
+          in: query
+          schema:
+            type: string
+          description: Breed
+        - name: name
+          in: query
+          schema:
+            type: string
+          description: Name
+        - name: ageFrom
+          in: query
+          schema:
+            type: number
+          description: Name
+        - name: ageTo
+          in: query
+          schema:
+            type: number
+          description: Name
       tags:
         - dogs
       description: Get all dogs

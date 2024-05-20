@@ -18,11 +18,10 @@ router.get(
     return next();
   },
   async (ctx) => {
-    // get all dogs
-
     const allDogs = await dogs.getAll({
       loadCharity: true,
       userId: ctx.state.user?.id,
+     searchParams: new URLSearchParams(ctx.request.search)
     });
     ctx.body = allDogs.map((dog) => {
       return {
