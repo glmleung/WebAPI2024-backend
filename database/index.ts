@@ -15,8 +15,10 @@ import { Like } from "../models/likes";
 
 const sequelize = new Sequelize(
   `postgres://${config.user}:${config.password}@${config.host}:${config.port}/${config.database}`,
-  { dialect: "postgres" }
+  { dialect: "postgres", logging: false }
 );
+
+const prefix = process.env.NODE_ENV === 'test' ? 'test_':''
 
 Dog.init(
   {
@@ -54,7 +56,7 @@ Dog.init(
     },
   },
   {
-    tableName: "dogs",
+    tableName: prefix+"dogs",
     sequelize,
   }
 );
@@ -90,7 +92,7 @@ User.init(
     },
   },
   {
-    tableName: "users",
+    tableName: prefix+"users",
     sequelize,
   }
 );
@@ -119,7 +121,7 @@ Charity.init(
   },
   {
     sequelize,
-    tableName: "charities",
+    tableName: prefix+"charities",
   }
 );
 
@@ -143,7 +145,7 @@ Like.init(
     },
   },
   {
-    tableName: "likes",
+    tableName: prefix+"likes",
     sequelize,
   }
 );

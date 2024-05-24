@@ -12,6 +12,7 @@ import { sequelize } from "./database";
 import { Strategy as JwtStrategy, ExtractJwt } from "passport-jwt";
 import { User as UserModel, getById as getUserById } from "./models/users";
 import bcrypt from "bcrypt";
+import app from "./app";
 
 declare global {
   namespace Express {
@@ -19,40 +20,13 @@ declare global {
   }
 }
 
+
+
 async function run() {
   await sequelize.authenticate();
-  await sequelize.sync({ force: false });
-  const app: Koa = new Koa();
-  app.use(cors());
-  app.use(serve("./docs"));
-  app.use(passport.initialize());
-  app.use(json());
-  app.use(logger());
-  app.use(bodyParser({ jsonLimit: "5mb" }));
-
-  passport.use(
-    new JwtStrategy(
-      {
-        jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-        secretOrKey: "secret",
-      },
-      async (jwt, done) => {
-        const user = await getUserById(jwt.id);
-        if (user) {
-          return done(null, user);
-        } else {
-          return done(null, null);
-        }
-      }
-    )
-  );
-
-  app.use(authRoutes.routes());
-  app.use(authRoutes.allowedMethods());
-  app.use(dogRoutes.routes());
-  app.use(dogRoutes.allowedMethods());
-  app.use(charityRoutes.routes());
-  app.use(charityRoutes.allowedMethods());
+  if(process.env.NODE_ENV !== 'test')
+  {await sequelize.sync();}
+  
   app.listen(10888, () => {
     console.log("Koa Started");
   });

@@ -11,6 +11,7 @@ const router = new Router({
 
 router.post("/register", async (ctx, next) => {
   const { username, password, charityCode } = ctx.request.body as any;
+  console.log({username, password})
   if (!username || !password) {
     ctx.status = 400;
     return;
