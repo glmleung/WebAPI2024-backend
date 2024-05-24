@@ -62,4 +62,33 @@ describe("tests", () => {
     .auth(token, { type: "bearer" });
     expect(res5.body).toMatchObject(charityData)
   });
+
+  it('login as worker',async () => {
+    const adminReg = await request(app.callback())
+    .post("/auth/register")
+    .send({ username: "admin", password: "admin", charityCode: "admin" });
+  expect(adminReg.body?.token).toBeTruthy();
+  const token = adminReg.body?.token
+    const charityData = {name:"test1", codes:['test1']}
+const createCharity= await request(app.callback())
+    .post("/charities")
+    .send(charityData)
+    .auth(token, { type: "bearer" });
+    expect(createCharity.body).toMatchObject(charityData)
+    expect(createCharity.body.id).toBeTruthy()
+    const charityId = createCharity.body.id
+
+    const workerReg = await request(app.callback())
+    .post("/auth/register")
+    .send({ username: "worker1", password: "worker1", charityCode: charityData.codes[0] });
+
+  const workerToken = workerReg.body?.token
+  expect(workerToken).toBeTruthy()
+
+  const workerMe = await request(app.callback())
+  .get("/auth/me")
+  .auth(workerToken, { type: "bearer" });
+expect(workerMe.body.role).toBe("worker");
+expect(workerMe.body.charityId).toBe(charityId);
+  })
 });
