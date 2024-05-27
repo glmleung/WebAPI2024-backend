@@ -20,13 +20,12 @@ declare global {
   }
 }
 
-
-
 async function run() {
   await sequelize.authenticate();
-  if(process.env.NODE_ENV !== 'test')
-  {await sequelize.sync();}
-  
+  if (process.env.NODE_ENV !== "test") {
+    await sequelize.sync();
+  }
+
   app.listen(10888, () => {
     console.log("Koa Started");
   });
