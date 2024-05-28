@@ -40,3 +40,13 @@ export const removeLike = async (userId: number, dogId: number) => {
     },
   });
 };
+
+export const getLikedDogsByUserId = async (userId: number) => {
+  const likes = await Like.findAll({
+    where: {
+      userId,
+    },
+    include: ["dog"],
+  });
+  return likes.map((like) => ({ ...like.dog.dataValues, liked: true }));
+};

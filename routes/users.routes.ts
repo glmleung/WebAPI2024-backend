@@ -1,14 +1,20 @@
+import passport from "koa-passport";
 import Router from "koa-router";
-import * as users from "../models/users";
+import * as likes from "../models/likes";
 const router = new Router({
   prefix: "/users",
 });
 
-router.get("/", async (ctx) => {
-  ctx.body = await users.getAll();
-});
+router.get(
+  "/likedDogs",
+  passport.authenticate("jwt", { session: false }),
 
-router.get("/:id", async (ctx) => {
-  const id = parseInt(ctx.params.id);
-  ctx.body = await users.getById(id);
-});
+  async (ctx) => {
+    const userId = ctx.state.user.id;
+    // console.log({userId})
+
+    ctx.body = await likes.getLikedDogsByUserId(userId);
+  }
+);
+
+export { router };

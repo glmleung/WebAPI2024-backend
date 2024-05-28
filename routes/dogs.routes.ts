@@ -44,6 +44,7 @@ router.get("/:id", async (ctx) => {
   }
   ctx.body = dog;
 });
+
 router.post(
   "/",
   passport.authenticate("jwt", { session: false }),
@@ -127,5 +128,7 @@ router.delete(
     ctx.status = success ? 200 : 404;
   }
 );
+
+
 
 export { router };

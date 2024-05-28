@@ -217,6 +217,20 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/User"
+  /users/likedDogs:
+    get:
+      tags:
+        - dogs
+      description: Get all liked dogs
+      responses:
+        200:
+          description: Dogs
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Dog"
   /charities:
     get:
       tags:

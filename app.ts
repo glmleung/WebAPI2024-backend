@@ -10,6 +10,7 @@ import { getById as getUserById } from "./models/users";
 import { router as authRoutes } from "./routes/auth.routes";
 import { router as charityRoutes } from "./routes/charity.routes";
 import { router as dogRoutes } from "./routes/dogs.routes";
+import { router as userRoutes } from "./routes/users.routes";
 
 const app: Koa = new Koa();
 app.use(cors());
@@ -42,5 +43,7 @@ app.use(dogRoutes.routes());
 app.use(dogRoutes.allowedMethods());
 app.use(charityRoutes.routes());
 app.use(charityRoutes.allowedMethods());
+app.use(userRoutes.routes());
+app.use(userRoutes.allowedMethods());
 
 export default app;
