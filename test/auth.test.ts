@@ -77,13 +77,11 @@ describe("tests", () => {
     expect(createCharity.body.id).toBeTruthy();
     const charityId = createCharity.body.id;
 
-    const workerReg = await request(appCallback)
-      .post("/auth/register")
-      .send({
-        username: "worker1",
-        password: "worker1",
-        charityCode: charityData.codes[0],
-      });
+    const workerReg = await request(appCallback).post("/auth/register").send({
+      username: "worker1",
+      password: "worker1",
+      charityCode: charityData.codes[0],
+    });
 
     const workerToken = workerReg.body?.token;
     expect(workerToken).toBeTruthy();
@@ -137,6 +135,42 @@ describe("tests", () => {
       id: dogId,
       name: "dog2",
     });
+    //login as normal ppl
+    const normalReg = await request(appCallback)
+      .post("/auth/register")
+      .send({ username: "normal", password: "normal" });
+    expect(normalReg.body?.token).toBeTruthy();
+    const normalToken = normalReg.body?.token;
+
+    const normalMe = await request(appCallback)
+      .get("/auth/me")
+      .auth(normalToken, { type: "bearer" });
+    expect(normalMe.body.role).toBe("user");
+    expect(normalMe.body.charityId).toBe(null);
+
+    // like dog as normal ppl
+    const dogLike = await request(appCallback)
+      .post(`/dogs/${dogId}/like`)
+      .auth(normalToken, { type: "bearer" });
+    expect(dogLike.status).toBe(201);
+
+    // get dog as normal ppl
+    const likedDogsGet = await request(appCallback)
+      .get(`/users/likedDogs`)
+      .auth(normalToken, { type: "bearer" });
+    expect(likedDogsGet.body).toHaveLength(1);
+    expect(likedDogsGet.body[0].id).toBe(dogId);
+
+    //unlike
+    const dogUnlike = await request(appCallback)
+      .delete(`/dogs/${dogId}/like`)
+      .auth(normalToken, { type: "bearer" });
+    expect(dogUnlike.status).toBe(204);
+
+    const likedDogsGet2 = await request(appCallback)
+      .get(`/users/likedDogs`)
+      .auth(normalToken, { type: "bearer" });
+    expect(likedDogsGet2.body).toHaveLength(0);
 
     const dogDelete = await request(appCallback)
       .delete(`/dogs/${dogId}`)
@@ -156,5 +190,6 @@ describe("tests", () => {
       .get("/dogs")
       .auth(workerToken2, { type: "bearer" });
     expect(dogsGet2.body).toHaveLength(0);
+    // login as normal ppl
   });
 });
